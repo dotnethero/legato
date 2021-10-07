@@ -1,11 +1,10 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Azure.Messaging.ServiceBus;
-using Azure.Messaging.ServiceBus.Administration;
+﻿using Azure.Messaging.ServiceBus.Administration;
 using Legato.Bus.Azure.Mapping;
 using Legato.Bus.Azure.Models;
 using Legato.Bus.Azure.Options;
 using Microsoft.Extensions.Options;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Legato.Bus.Azure
 {
@@ -20,11 +19,9 @@ namespace Legato.Bus.Azure
     class BusManager : IBusManager
     {
         ServiceBusAdministrationClient client;
-        IOptions<BusConfiguration> options;
 
         public BusManager(IOptions<BusConfiguration> options)
         {
-            this.options = options;
             this.client = new ServiceBusAdministrationClient(options.Value.ConnectionString);
         }
 
