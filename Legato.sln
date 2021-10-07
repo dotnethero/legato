@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legato.CQRS", "Legato.CQRS\Legato.CQRS.csproj", "{9D0F4CB2-79D6-4C46-8464-30483CBE212A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legato.Common", "Legato.Common\Legato.Common.csproj", "{C992058C-0D05-466B-A6E4-16D9EEF1C93A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legato", "Legato\Legato.csproj", "{D4F41469-4BC9-4505-8F2D-20D6D8E7E051}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legato.Bus.Azure", "Legato.Bus\Legato.Bus.Azure.csproj", "{2A08A8DB-ACA8-4471-A8E8-5625B542F6E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legato.Bus.Abstractions", "Legato.Bus.Abstractions\Legato.Bus.Abstractions.csproj", "{C0BA7ED1-52EC-4A58-A4CE-D47F86737C11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legato.Transactions.Abstractions", "Legato.Transactions.Abstractions\Legato.Transactions.Abstractions.csproj", "{5C89E52A-2E58-4C4B-8B17-252F33DF3BD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legato.CQRS.Abstractions", "Legato.CQRS.Abstractions\Legato.CQRS.Abstractions.csproj", "{350E3B2E-6D53-4619-AD0D-456FE268CCF8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9D0F4CB2-79D6-4C46-8464-30483CBE212A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D0F4CB2-79D6-4C46-8464-30483CBE212A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D0F4CB2-79D6-4C46-8464-30483CBE212A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D0F4CB2-79D6-4C46-8464-30483CBE212A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C992058C-0D05-466B-A6E4-16D9EEF1C93A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C992058C-0D05-466B-A6E4-16D9EEF1C93A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C992058C-0D05-466B-A6E4-16D9EEF1C93A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C992058C-0D05-466B-A6E4-16D9EEF1C93A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4F41469-4BC9-4505-8F2D-20D6D8E7E051}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4F41469-4BC9-4505-8F2D-20D6D8E7E051}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4F41469-4BC9-4505-8F2D-20D6D8E7E051}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4F41469-4BC9-4505-8F2D-20D6D8E7E051}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A08A8DB-ACA8-4471-A8E8-5625B542F6E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A08A8DB-ACA8-4471-A8E8-5625B542F6E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A08A8DB-ACA8-4471-A8E8-5625B542F6E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A08A8DB-ACA8-4471-A8E8-5625B542F6E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0BA7ED1-52EC-4A58-A4CE-D47F86737C11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0BA7ED1-52EC-4A58-A4CE-D47F86737C11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0BA7ED1-52EC-4A58-A4CE-D47F86737C11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0BA7ED1-52EC-4A58-A4CE-D47F86737C11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C89E52A-2E58-4C4B-8B17-252F33DF3BD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C89E52A-2E58-4C4B-8B17-252F33DF3BD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C89E52A-2E58-4C4B-8B17-252F33DF3BD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C89E52A-2E58-4C4B-8B17-252F33DF3BD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{350E3B2E-6D53-4619-AD0D-456FE268CCF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{350E3B2E-6D53-4619-AD0D-456FE268CCF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{350E3B2E-6D53-4619-AD0D-456FE268CCF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{350E3B2E-6D53-4619-AD0D-456FE268CCF8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {562F19ED-537A-4E86-B5D9-079C7C3EB699}
+	EndGlobalSection
+EndGlobal
