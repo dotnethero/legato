@@ -6,7 +6,6 @@ using Legato.Bus.Attributes;
 using Legato.Bus.Azure.Extensions;
 using Legato.Bus.Azure.Options;
 using Legato.Bus.Azure.Processors;
-using Legato.Bus.Extensions;
 using Legato.CQRS;
 using Legato.Transactions;
 using Microsoft.Extensions.Logging;
@@ -53,30 +52,20 @@ namespace Legato.Bus.Azure
 
         public async Task EnsureIsConfigured()
         {
-            foreach (var processor in topicProcessors.Value)
-            {
+            foreach (var processor in topicProcessors.Value) 
                 await EnsureSubscriptionsAreCreated(processor);
-            }
 
-            foreach (var processor in queueProcessors.Value)
-            {
+            foreach (var processor in queueProcessors.Value) 
                 await EnsureQueueCreated(processor);
-            }
         }
 
         public async Task Start()
         {
-            foreach (var processor in topicProcessors.Value)
-            {
-                await EnsureSubscriptionsAreCreated(processor);
+            foreach (var processor in topicProcessors.Value) 
                 await processor.Start();
-            }
 
-            foreach (var processor in queueProcessors.Value)
-            {
-                await EnsureQueueCreated(processor);
+            foreach (var processor in queueProcessors.Value) 
                 await processor.Start();
-            }
         }
 
         public async Task Stop()
@@ -110,13 +99,13 @@ namespace Legato.Bus.Azure
         }
 
         IEnumerable<QueueProcessor> CreateQueueProcessors() =>
-            from type in GetPublishTypes()
+            from type in AppDomain.CurrentDomain.GetRoutedCommands()
             from subscription in GetQueueSubscriptions(type)
             group subscription by subscription.Queue into g
             select CreateQueueProcessor(g.Key, g);
 
         IEnumerable<TopicProcessor> CreateTopicProcessors() =>
-            from topic in GetTopics()
+            from topic in AppDomain.CurrentDomain.GetRoutedEvents()
             from subscription in GetTopicSubscriptions(topic)
             select CreateTopicProcessor(subscription);
 
@@ -214,18 +203,6 @@ namespace Legato.Bus.Azure
                 throw;
             }
         }
-
-        static Type[] GetTopics() =>
-            AppDomain.CurrentDomain
-                .GetAssemblies()
-                .SelectMany(a => a.GetTypes().Where(t => t.IsAssignableTo(typeof(DomainEvent)) && t.IsRouted()))
-                .ToArray();
-
-        static Type[] GetPublishTypes() =>
-            AppDomain.CurrentDomain
-                .GetAssemblies()
-                .SelectMany(a => a.GetTypes().Where(t => t.IsAssignableTo(typeof(DomainCommand)) && t.IsRoutedTo()))
-                .ToArray();
 
         public async ValueTask DisposeAsync()
         {

@@ -9,10 +9,10 @@ namespace Legato.Bus.Azure.Processors
 
         public TopicProcessor(
             string topic, 
-            TopicSubscription subscriptions, 
+            TopicSubscription subscription, 
             ServiceBusProcessor processor, 
             ILogger logger) : 
-            base(new[] { subscriptions }, processor, logger)
+            base(new[] { subscription }, processor, logger)
         {
             Topic = topic;
         }
