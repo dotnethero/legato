@@ -33,9 +33,9 @@ namespace Legato.Bus.Azure
         ILoggerFactory loggerFactory;
         ILifetimeScope scope;
         ServiceBusClient client;
-        ServiceBusAdministrationClient administration;
-        Lazy<IEnumerable<TopicProcessor>> topicProcessors;
-        Lazy<IEnumerable<QueueProcessor>> queueProcessors;
+        ServiceBusAdministrationClient admin;
+        Lazy<TopicProcessor[]> topicProcessors;
+        Lazy<QueueProcessor[]> queueProcessors;
 
         public BusMessageProcessorHub(
             IOptions<BusConfiguration> options,
@@ -45,9 +45,9 @@ namespace Legato.Bus.Azure
             this.loggerFactory = loggerFactory;
             this.scope = scope;
             this.client = new ServiceBusClient(options.Value.ConnectionString);
-            this.administration = new ServiceBusAdministrationClient(options.Value.ConnectionString);
-            this.topicProcessors = new Lazy<IEnumerable<TopicProcessor>>(CreateTopicProcessors);
-            this.queueProcessors = new Lazy<IEnumerable<QueueProcessor>>(CreateQueueProcessors);
+            this.admin = new ServiceBusAdministrationClient(options.Value.ConnectionString);
+            this.topicProcessors = new Lazy<TopicProcessor[]>(() => CreateTopicProcessors().ToArray());
+            this.queueProcessors = new Lazy<QueueProcessor[]>(() => CreateQueueProcessors().ToArray());
         }
 
         public async Task EnsureIsConfigured()
@@ -76,26 +76,26 @@ namespace Legato.Bus.Azure
             foreach (var processor in queueProcessors.Value)
                 await processor.Stop();
         }
+        
+        async Task EnsureQueueCreated(QueueProcessor processor)
+        {
+            if (!await admin.QueueExistsAsync(processor.QueueName)) 
+                await admin.CreateQueueAsync(new CreateQueueOptions(processor.QueueName));
+        }
 
         async Task EnsureSubscriptionsAreCreated(TopicProcessor processor)
         {
-            if (!await administration.TopicExistsAsync(processor.Topic))
-                await administration.CreateTopicAsync(new CreateTopicOptions(processor.Topic));
+            if (!await admin.TopicExistsAsync(processor.Topic))
+                await admin.CreateTopicAsync(new CreateTopicOptions(processor.Topic));
 
-            foreach (var subscription in processor.Subscriptions)
-            {
-                if (!await administration.SubscriptionExistsAsync(subscription.Topic, subscription.Queue))
-                    await administration.CreateSubscriptionAsync(new CreateSubscriptionOptions(subscription.Topic, subscription.Queue) { MaxDeliveryCount = 1 });
-            }
+            foreach (var subscription in processor.Subscriptions) 
+                await EnsureSubscriptionCreated(subscription);
         }
 
-        async Task EnsureQueueCreated(QueueProcessor processor)
+        async Task EnsureSubscriptionCreated(TopicSubscription subscription)
         {
-            var exists = await administration.QueueExistsAsync(processor.QueueName);
-            if (exists)
-                return;
-
-            await administration.CreateQueueAsync(new CreateQueueOptions(processor.QueueName));
+            if (!await admin.SubscriptionExistsAsync(subscription.Topic, subscription.Queue))
+                await admin.CreateSubscriptionAsync(new CreateSubscriptionOptions(subscription.Topic, subscription.Queue) {MaxDeliveryCount = 1});
         }
 
         IEnumerable<QueueProcessor> CreateQueueProcessors() =>
