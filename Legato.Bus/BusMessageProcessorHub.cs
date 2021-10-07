@@ -189,18 +189,30 @@ namespace Legato.Bus.Azure
             using (logger.BeginScope(state))
                 logger.LogInformation($"ServiceBus message received: {consumedType}");
 
-            await using var transaction = await innerScope.Resolve<ITransactionContext>().BeginTransaction();
-            try
+            var context = innerScope.ResolveOptional<ITransactionContext>();
+            if (context is not null)
             {
-                var handler = innerScope.Resolve(serviceType);
-                var task = (Task)methodInfo.Invoke(handler, new[] { obj });
-                await task!;
-                await transaction.CommitAsync();
+                await using var transaction = await context.BeginTransaction();
+                try
+                {
+                    var handler = innerScope.Resolve(serviceType);
+                    var task = (Task) methodInfo.Invoke(handler, new[] {obj});
+                    await task!;
+                    await transaction.CommitAsync();
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
             }
-            catch
+            else
             {
-                await transaction.RollbackAsync();
-                throw;
+                // if transactions are not supported
+
+                var handler = innerScope.Resolve(serviceType);
+                var task = (Task) methodInfo.Invoke(handler, new[] {obj});
+                await task!;
             }
         }
 
