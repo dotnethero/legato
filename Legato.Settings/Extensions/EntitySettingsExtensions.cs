@@ -13,7 +13,7 @@ namespace Legato.Settings.Extensions
                 ? entity.Settings.Data
                 : new TSettings();
 
-        public static void SetSettings<TSettings>(this ISimpleStateContext context, IHasSettings<TSettings> entity, TSettings settings)
+        public static void SetSettings<TSettings>(this IStateContext context, IHasSettings<TSettings> entity, TSettings settings)
             where TSettings : IEntitySettings
         {
             if (entity.Settings is null)
@@ -24,7 +24,7 @@ namespace Legato.Settings.Extensions
             else
             {
                 entity.Settings.Data = settings;
-                context.Modified(entity.Settings);
+                context.Update(entity.Settings);
             }
         }
     }

@@ -10,10 +10,10 @@ namespace Legato.Settings.Services
     class SettingsProvider : ISettingsProvider
     {
         IQueryProvider<GeneralSettings> provider;
-        ISimpleStateContext context;
+        IStateContext context;
         IMemoryCache cache;
 
-        public SettingsProvider(IQueryProvider<GeneralSettings> provider, ISimpleStateContext context, IMemoryCache cache)
+        public SettingsProvider(IQueryProvider<GeneralSettings> provider, IStateContext context, IMemoryCache cache)
         {
             this.provider = provider;
             this.context = context;

@@ -25,29 +25,34 @@ namespace Legato.Data.Services
             this.time = time;
         }
 
-        public void Add<T>(T entity) where T : DomainEntity
+        public void Add<T>(T entity) where T : IEntity
         {
             context.Add(entity);
         }
 
-        public void Attach<T>(T entity) where T : DomainEntity
+        public void Attach<T>(T entity) where T : IEntity
         {
             context.Attach(entity);
         }
-        
-        public void Remove<T>(T entity) where T : DomainEntity
+
+        public void Update<T>(T entity) where T : IEntity
+        {
+            context.Entry(entity).State = EntityState.Modified;
+        }
+
+        public void Remove<T>(T entity) where T : IEntity
         {
             context.Remove(entity);
         }
         
-        static void OnTracked(object sender, EntityTrackedEventArgs e)
+        static void OnTracked(object? sender, EntityTrackedEventArgs e)
         {
             if (e.Entry.Entity is DomainEntity entity && e.Entry.State == EntityState.Added && entity.EntityId == default)
             {
                 entity.EntityId = Guid.NewGuid();
             }
         }
-
+        
         public void Store<TCommand>(TCommand command) where TCommand : DomainCommand
         {
             var entity = new DomainCommandEntity
@@ -61,80 +66,6 @@ namespace Legato.Data.Services
             context.Add(entity);
         }
 
-        public async Task PublishChanges<TEvent>(TEvent domainEvent) where TEvent : DomainEvent
-        {
-            context.ChangeTracker.DetectChanges();
-
-            var timestamp = time.Now;
-            var changes = CollectChanges(domainEvent, timestamp).ToArray();
-
-            StoreEvent(domainEvent, timestamp);
-            await context.SaveChangesAsync();
-
-            foreach (var (entity, state, change) in changes)
-            {
-                context.Add(change);
-                entity.Version++;
-                if (state == EntityState.Added)
-                {
-                    SetCreatedAt(entity, timestamp);
-                    SetUpdatedAt(entity, timestamp);
-                }
-                if (state == EntityState.Modified)
-                {
-                    SetUpdatedAt(entity, timestamp);
-                }
-            }
-
-            // save domain entities changes with Ids already set
-            await context.SaveChangesAsync();
-
-            // clear context
-            context.ChangeTracker.Clear();
-
-            await events.Publish(domainEvent);
-        }
-
-        IEnumerable<(DomainEntity entity, EntityState state, DomainEntityChange change)> CollectChanges<TEvent>(TEvent e, DateTime timestamp)
-            where TEvent : DomainEvent =>
-            from entry in context.ChangeTracker.Entries()
-            where IsDomainEntity(entry)
-            where HasChanges(entry)
-            let entity = (DomainEntity) entry.Entity
-            select (entity, entry.State, new DomainEntityChange
-            {
-                Timestamp = timestamp,
-                CorrelationId = e.CorrelationId,
-                Type = entity.GetType().AssemblyQualifiedName!,
-                EntityId = entity.EntityId,
-                Version = entity.Version,
-                State = entity
-            });
-
-        static bool IsDomainEntity(Type type) => type.IsSubclassOf(typeof(DomainEntity));
-        static bool IsDomainEntity(EntityEntry entry) => IsDomainEntity(entry.Metadata.ClrType);
-
-        static bool IsNotDomainEntity(ReferenceEntry entry) => !IsDomainEntity(entry.Metadata.TargetEntityType.ClrType);
-        static bool IsNotDomainEntity(CollectionEntry entry) => !IsDomainEntity(entry.Metadata.TargetEntityType.ClrType);
-
-        static bool HasChanges(EntityEntry entry)
-        {
-            if (entry.State == EntityState.Added ||
-                entry.State == EntityState.Modified)
-                return true;
-
-            return
-                entry.Collections.Where(IsNotDomainEntity).Any(HasChanges) ||
-                entry.References.Where(IsNotDomainEntity).Any(HasChanges);
-        }
-
-        static bool HasChanges(CollectionEntry entry) => 
-            entry.IsModified;
-
-        static bool HasChanges(ReferenceEntry entry) =>
-            entry.IsModified || 
-            entry.TargetEntry is not null && HasChanges(entry.TargetEntry);
-
         void StoreEvent<TEvent>(TEvent domainEvent, DateTime now) where TEvent : DomainEvent
         {
             var entity = new DomainEventEntity
@@ -147,17 +78,113 @@ namespace Legato.Data.Services
             };
             context.Add(entity);
         }
-
-        static void SetCreatedAt<T>(T entity, DateTime timestamp) where T : DomainEntity
+        
+        void StoreEntityChange<TEvent>(DomainEntity entity, TEvent domainEvent, DateTime timestamp) where TEvent : DomainEvent
         {
-            if (entity is IHasCreatedAt created)
-                created.CreatedAt = timestamp;
+            var change = new DomainEntityChange
+            {
+                Timestamp = timestamp,
+                CorrelationId = domainEvent.CorrelationId,
+                Type = entity.GetType().AssemblyQualifiedName!,
+                EntityId = entity.EntityId,
+                Version = entity.Version,
+                State = entity
+            };
+            context.Add(change);
         }
 
-        static void SetUpdatedAt<T>(T entity, DateTime timestamp) where T : DomainEntity
+        public async Task PublishChanges<TEvent>(TEvent domainEvent) where TEvent : DomainEvent
         {
-            if (entity is IHasUpdatedAt updated)
-                updated.UpdatedAt = timestamp;
+            await InternalSaveChanges(domainEvent);
         }
+
+        public async Task SaveChanges()
+        {
+            await InternalSaveChanges(null as DomainEvent);
+        }
+        
+        async Task InternalSaveChanges<TEvent>(TEvent? domainEvent) where TEvent : DomainEvent
+        {
+            context.ChangeTracker.DetectChanges();
+
+            var timestamp = time.Now;
+            var changes = CollectChanges().ToArray();
+
+            if (domainEvent is not null)
+            {
+                StoreEvent(domainEvent, timestamp);
+            }
+
+            await context.SaveChangesAsync();
+
+            foreach (var (entity, state) in changes)
+            {
+                if (entity is DomainEntity domainEntity && domainEvent is not null)
+                {
+                    StoreEntityChange(domainEntity, domainEvent, timestamp);
+                }
+
+                UpdateEntityState(entity, state, timestamp);
+            }
+
+            await context.SaveChangesAsync();
+
+            // clear context
+            context.ChangeTracker.Clear();
+
+            if (domainEvent is not null)
+            {
+                await events.Publish(domainEvent);
+            }
+        }
+
+        static void UpdateEntityState(IEntity entity, EntityState state, DateTime timestamp)
+        {
+            if (entity is IHasVersion hasVersion)
+            {
+                hasVersion.Version++;
+            }
+
+            if (entity is IHasCreatedAt hasCreatedAt && state is EntityState.Added)
+            {
+                hasCreatedAt.CreatedAt = timestamp;
+            }
+
+            if (entity is IHasUpdatedAt hasUpdatedAt && state is EntityState.Added or EntityState.Modified)
+            {
+                hasUpdatedAt.UpdatedAt = timestamp;
+            }
+        }
+
+        IEnumerable<(IEntity entity, EntityState state)> CollectChanges() =>
+            from entry in context.ChangeTracker.Entries()
+            where IsEntity(entry)
+            where HasChanges(entry)
+            let entity = (IEntity) entry.Entity
+            select (entity, entry.State);
+
+        static bool IsEntity(Type type) => type.IsAssignableFrom(typeof(IEntity));
+        static bool IsEntity(EntityEntry entry) => IsEntity(entry.Metadata.ClrType);
+
+        static bool IsNotEntity(ReferenceEntry entry) => !IsEntity(entry.Metadata.TargetEntityType.ClrType);
+        static bool IsNotEntity(CollectionEntry entry) => !IsEntity(entry.Metadata.TargetEntityType.ClrType);
+
+        static bool HasChanges(EntityEntry entry)
+        {
+            if (entry.State == EntityState.Added ||
+                entry.State == EntityState.Modified)
+                return true;
+
+            return
+                entry.Collections.Where(IsNotEntity).Any(HasChanges) ||
+                entry.References.Where(IsNotEntity).Any(HasChanges);
+        }
+
+        static bool HasChanges(CollectionEntry entry) => 
+            entry.IsModified;
+
+        static bool HasChanges(ReferenceEntry entry) =>
+            entry.IsModified || 
+            entry.TargetEntry is not null && HasChanges(entry.TargetEntry);
     }
 }
