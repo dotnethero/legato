@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 
-namespace Legato.Bus.Azure.Extensions
+namespace Legato.Common.Extensions
 {
     class TimeSpanConverter : JsonConverter<TimeSpan>
     {
@@ -19,7 +19,7 @@ namespace Legato.Bus.Azure.Extensions
         }
     }
 
-    static class JsonExtensions
+    public static class JsonExtensions
     {
         public static JsonSerializerOptions DefaultOptions => 
             new()

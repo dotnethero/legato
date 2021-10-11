@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Legato.Bus.Abstractions\Legato.Bus.Abstractions.csproj" />
+    <ProjectReference Include="..\Legato.CQRS.Abstractions\Legato.CQRS.Abstractions.csproj" />
+    <ProjectReference Include="..\Legato.Transactions.Abstractions\Legato.Transactions.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

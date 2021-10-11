@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Legato.Bus.Abstractions\Legato.Bus.Abstractions.csproj" />
+    <ProjectReference Include="..\Legato.Common\Legato.Common.csproj" />
     <ProjectReference Include="..\Legato.CQRS\Legato.CQRS.csproj" />
     <ProjectReference Include="..\Legato.Transactions.Abstractions\Legato.Transactions.Abstractions.csproj" />
   </ItemGroup>

@@ -13,6 +13,8 @@
     <ProjectReference Include="..\Legato.Bus\Legato.Bus.Azure.csproj" />
     <ProjectReference Include="..\Legato.Common\Legato.Common.csproj" />
     <ProjectReference Include="..\Legato.CQRS\Legato.CQRS.csproj" />
+    <ProjectReference Include="..\Legato.Data.Transactions\Legato.Transactions.csproj" />
+    <ProjectReference Include="..\Legato.Data\Legato.Data.csproj" />
   </ItemGroup>
 
 </Project>

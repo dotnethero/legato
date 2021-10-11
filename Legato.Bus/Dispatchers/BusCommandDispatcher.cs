@@ -1,9 +1,9 @@
 ﻿using Autofac;
 using Azure.Messaging.ServiceBus;
 using Legato.Bus.Attributes;
-using Legato.Bus.Azure.Extensions;
 using Legato.Bus.Azure.Options;
 using Legato.Bus.Extensions;
+using Legato.Common.Extensions;
 using Legato.CQRS;
 using Legato.CQRS.Services;
 using Microsoft.Extensions.Logging;

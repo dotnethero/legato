@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Azure.Messaging.ServiceBus;
-using Legato.Bus.Azure.Extensions;
 using Legato.Bus.Azure.Options;
 using Legato.Bus.Extensions;
+using Legato.Common.Extensions;
 using Legato.CQRS.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Legato.Bus.Azure.Dispatchers
 {

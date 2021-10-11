@@ -1,16 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Legato.Data</RootNamespace>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Legato.CQRS.Abstractions\Legato.CQRS.Abstractions.csproj" />
+    <ProjectReference Include="..\Legato.Transactions.Abstractions\Legato.Transactions.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
