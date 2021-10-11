@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Legato.CQRS.Abstractions\Legato.CQRS.Abstractions.csproj" />
-    <ProjectReference Include="..\Legato.Transactions.Abstractions\Legato.Transactions.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
