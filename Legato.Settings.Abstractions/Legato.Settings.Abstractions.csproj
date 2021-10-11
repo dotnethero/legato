@@ -5,10 +5,11 @@
     <RootNamespace>Legato.Settings</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Models\**" />
-    <EmbeddedResource Remove="Models\**" />
-    <None Remove="Models\**" />
-  </ItemGroup>
+  <PropertyGroup>
+    <PackageId>Legato.Settings.Abstractions</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>dotnethero</Authors>
+    <RepositoryUrl>https://github.com/dotnethero/legato</RepositoryUrl>
+  </PropertyGroup>
 
 </Project>

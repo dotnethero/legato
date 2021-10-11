@@ -6,4 +6,11 @@
     <RootNamespace>Legato.Transactions</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>Legato.Transactions.Abstractions</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>dotnethero</Authors>
+    <RepositoryUrl>https://github.com/dotnethero/legato</RepositoryUrl>
+  </PropertyGroup>
+
 </Project>
