@@ -15,6 +15,7 @@
     <ProjectReference Include="..\Legato.CQRS\Legato.CQRS.csproj" />
     <ProjectReference Include="..\Legato.Data.Transactions\Legato.Transactions.csproj" />
     <ProjectReference Include="..\Legato.Data\Legato.Data.csproj" />
+    <ProjectReference Include="..\Legato.Settings\Legato.Settings.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,6 +3,7 @@ using Legato.Bus.Azure;
 using Legato.Common;
 using Legato.CQRS;
 using Legato.Data;
+using Legato.Settings;
 using Legato.Transactions;
 
 namespace Legato
@@ -14,8 +15,9 @@ namespace Legato
             builder.RegisterModule<CommonModule>();
             builder.RegisterModule<CQRSModule>();
             builder.RegisterModule<DataModule>();
+            builder.RegisterModule<SettingsModule>();
             builder.RegisterModule<BusModule>();
-            builder.RegisterModule<TransactionModule>(); // decorators for dispatchers
+            builder.RegisterModule<TransactionsModule>(); // decorators for dispatchers
         }
     }
 }

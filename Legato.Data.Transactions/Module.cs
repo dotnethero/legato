@@ -4,7 +4,7 @@ using Legato.Transactions.Services;
 
 namespace Legato.Transactions
 {
-    public class TransactionModule : Module
+    public class TransactionsModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
