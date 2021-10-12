@@ -11,6 +11,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
+    - name: Version
+      id: version
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -26,7 +30,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
       
     - name: Pack
-      run: dotnet pack --configuration Release --output packages
+      run: dotnet pack --configuration Release --output packages /p:Version=${{ steps.version.outputs.tag }}
       
     - name: Publish
       run: dotnet nuget push packages/*.nupkg --source https://nuget.pkg.github.com/legato/index.json --api-key ${{ secrets.PAT }} --skip-duplicate
