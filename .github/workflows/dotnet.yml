@@ -24,3 +24,9 @@ jobs:
       
     - name: Test
       run: dotnet test --no-build --verbosity normal
+      
+    - name: Pack
+      run: dotnet pack --configuration Release --output packages
+      
+    - name: Publish
+      run: dotnet nuget push packages/*.nupkg --source https://nuget.pkg.github.com/legato/index.json --api-key ${{ secrets.PAT }} --skip-duplicate
