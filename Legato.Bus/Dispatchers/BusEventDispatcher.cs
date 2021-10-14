@@ -46,6 +46,7 @@ namespace Legato.Bus.Azure.Dispatchers
 
                 var state = new Dictionary<string, object>
                 {
+                    {"CorrelationId", message.CorrelationId},
                     {"ActivityId", Activity.Current?.Id},
                     {"Request", json }
                 };
