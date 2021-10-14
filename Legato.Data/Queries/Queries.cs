@@ -9,7 +9,7 @@ namespace Legato.Data.Queries
 {
     public static class Queries
     {
-        public static Task<T> Find<T, TKey>(this IQueryProvider<T> provider, TKey id)
+        public static Task<T?> Find<T, TKey>(this IQueryProvider<T> provider, TKey id)
             where T : class, IEntity, IHasId<TKey> 
             where TKey : struct =>
             provider
@@ -17,7 +17,7 @@ namespace Legato.Data.Queries
                 .ById(id)
                 .SingleOrDefaultAsync();
         
-        public static Task<T> Find<T>(this IQueryProvider<T> provider, Guid entityId)
+        public static Task<T?> Find<T>(this IQueryProvider<T> provider, Guid entityId)
             where T : DomainEntity =>
             provider
                 .Query()
