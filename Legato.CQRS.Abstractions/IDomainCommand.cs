@@ -9,9 +9,9 @@ namespace Legato.CQRS
 
     public abstract record DomainCommand
     {
-        public Guid CorrelationId { get; }
+        public Guid CorrelationId { get; init; }
 
-        protected DomainCommand() : this(Guid.NewGuid())
+        protected DomainCommand()
         {
         }
         
