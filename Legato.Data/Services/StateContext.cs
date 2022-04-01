@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Legato.CQRS;
 using Legato.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Legato.Data.Services
 {
@@ -45,14 +47,49 @@ namespace Legato.Data.Services
             context.Remove(entity);
         }
         
-        static void OnTracked(object? sender, EntityTrackedEventArgs e)
+        void OnTracked(object? sender, EntityTrackedEventArgs e)
         {
-            if (e.Entry.Entity is DomainEntity entity && e.Entry.State == EntityState.Added && entity.EntityId == default)
+            if (e.Entry.State == EntityState.Added)
+            {
+                OnAdded(e.Entry);
+            }
+        }
+
+        void OnAdded(EntityEntry entry)
+        {
+            if (entry.Entity is DomainEntity entity && entity.EntityId == default)
             {
                 entity.EntityId = Guid.NewGuid();
             }
+
+            if (entry.Entity is IEntity)
+            {
+                UseSequence(entry);
+            }
         }
-        
+
+        void UseSequence(EntityEntry entry)
+        {
+            var sequence = entry.Metadata.FindAnnotation("Id.Sequence");
+            if (sequence is null) return;
+
+            var type = entry.Entity.GetType();
+            var property = type.GetProperty("Id");
+            if (property is null) return;
+
+            var preset = property.GetValue(entry.Entity);
+            if (!property.PropertyType.IsDefaultValue(preset)) return;
+
+            var connection = context.Database.GetDbConnection();
+            connection.Open();
+            var command = connection.CreateCommand();
+            command.CommandText = $"SELECT NEXT VALUE FOR {sequence.Value}";
+            command.CommandType = CommandType.Text;
+
+            var value = (int)(long)command.ExecuteScalar()!;
+            property.SetValue(entry.Entity, value);
+        }
+
         public void Store<TCommand>(TCommand command) where TCommand : DomainCommand
         {
             var entity = new DomainCommandEntity
@@ -79,12 +116,12 @@ namespace Legato.Data.Services
             context.Add(entity);
         }
         
-        void StoreEntityChange<TEvent>(DomainEntity entity, TEvent domainEvent, DateTime timestamp) where TEvent : DomainEvent
+        void StoreEntityChange(DomainEntity entity, Guid correlationId, DateTime timestamp)
         {
             var change = new DomainEntityChange
             {
                 Timestamp = timestamp,
-                CorrelationId = domainEvent.CorrelationId,
+                CorrelationId = correlationId,
                 Type = entity.GetType().AssemblyQualifiedName!,
                 EntityId = entity.EntityId,
                 Version = entity.Version,
@@ -107,6 +144,7 @@ namespace Legato.Data.Services
         {
             context.ChangeTracker.DetectChanges();
 
+            var correlationId = domainEvent?.CorrelationId ?? Guid.NewGuid();
             var timestamp = time.Now;
             var changes = CollectChanges().ToArray();
 
@@ -119,9 +157,9 @@ namespace Legato.Data.Services
 
             foreach (var (entity, state) in changes)
             {
-                if (entity is DomainEntity domainEntity && domainEvent is not null)
+                if (entity is DomainEntity domainEntity)
                 {
-                    StoreEntityChange(domainEntity, domainEvent, timestamp);
+                    StoreEntityChange(domainEntity, correlationId, timestamp);
                 }
 
                 UpdateEntityState(entity, state, timestamp);
@@ -163,7 +201,7 @@ namespace Legato.Data.Services
             let entity = (IEntity) entry.Entity
             select (entity, entry.State);
 
-        static bool IsEntity(Type type) => type.IsAssignableFrom(typeof(IEntity));
+        static bool IsEntity(Type type) => type.IsAssignableTo(typeof(IEntity));
         static bool IsEntity(EntityEntry entry) => IsEntity(entry.Metadata.ClrType);
 
         static bool IsNotEntity(ReferenceEntry entry) => !IsEntity(entry.Metadata.TargetEntityType.ClrType);
