@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31424.327
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Legato.CQRS", "Legato.CQRS\Legato.CQRS.csproj", "{9D0F4CB2-79D6-4C46-8464-30483CBE212A}"
 EndProject
@@ -17,15 +17,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Legato.Transactions.Abstrac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Legato.CQRS.Abstractions", "Legato.CQRS.Abstractions\Legato.CQRS.Abstractions.csproj", "{350E3B2E-6D53-4619-AD0D-456FE268CCF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legato.Data.Abstractions", "Legato.Data.Abstractions\Legato.Data.Abstractions.csproj", "{EBA7C117-EF69-44FD-9B62-22167689AF8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Legato.Data.Abstractions", "Legato.Data.Abstractions\Legato.Data.Abstractions.csproj", "{EBA7C117-EF69-44FD-9B62-22167689AF8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legato.Data", "Legato.Data\Legato.Data.csproj", "{C2915274-A6B5-40C9-89A8-0D3E89485D50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Legato.Data", "Legato.Data\Legato.Data.csproj", "{C2915274-A6B5-40C9-89A8-0D3E89485D50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legato.Transactions", "Legato.Data.Transactions\Legato.Transactions.csproj", "{8B4752E3-30C3-4155-B60E-0E0D6B45AAB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Legato.Transactions", "Legato.Data.Transactions\Legato.Transactions.csproj", "{8B4752E3-30C3-4155-B60E-0E0D6B45AAB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legato.Settings.Abstractions", "Legato.Settings.Abstractions\Legato.Settings.Abstractions.csproj", "{CB4FC46D-AF56-4934-BF6F-B7FF000C089A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Legato.Settings.Abstractions", "Legato.Settings.Abstractions\Legato.Settings.Abstractions.csproj", "{CB4FC46D-AF56-4934-BF6F-B7FF000C089A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legato.Settings", "Legato.Settings\Legato.Settings.csproj", "{889CAF58-037D-45DA-88E9-80EAF5959101}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Legato.Settings", "Legato.Settings\Legato.Settings.csproj", "{889CAF58-037D-45DA-88E9-80EAF5959101}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Legato.App", "Legato.App\Legato.App.csproj", "{D3E838BD-1016-43EF-A333-BD8F50A37E31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +83,10 @@ Global
 		{889CAF58-037D-45DA-88E9-80EAF5959101}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{889CAF58-037D-45DA-88E9-80EAF5959101}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{889CAF58-037D-45DA-88E9-80EAF5959101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3E838BD-1016-43EF-A333-BD8F50A37E31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3E838BD-1016-43EF-A333-BD8F50A37E31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3E838BD-1016-43EF-A333-BD8F50A37E31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3E838BD-1016-43EF-A333-BD8F50A37E31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
